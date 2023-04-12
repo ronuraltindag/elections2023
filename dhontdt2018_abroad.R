@@ -120,7 +120,11 @@ df.party.k <- df.party.k %>%
          sc6 = case_when(party=="CUMHURİYET HALK PARTİSİ" ~ chp.iyip.k , 
                          party=="İYİ PARTİ" ~ 0, TRUE ~k), 
          sc7 = case_when(party=="CUMHURİYET HALK PARTİSİ" ~ 0 , 
-                         party=="İYİ PARTİ" ~ chp.iyip.k, TRUE ~k) 
+                         party=="İYİ PARTİ" ~ chp.iyip.k, TRUE ~k), 
+         sc8 = case_when(party=="CUMHURİYET HALK PARTİSİ" ~ 0 , 
+                         party=="İYİ PARTİ" ~ 0, 
+                         party=="HALKLARIN DEMOKRATİK PARTİSİ" ~0,
+                         TRUE ~k), 
          
   )
 
@@ -189,7 +193,7 @@ get.sim <- function(z){
   return(t1)
 }
 
-out.sim <- lapply(2:9, get.sim)
+out.sim <- lapply(2:10, get.sim)
 out.sim2 <- do.call(rbind.data.frame,out.sim)
 
 out.sim2$dem.bloc <- 0 
@@ -209,3 +213,18 @@ out.sim3 <- out.sim3 %>%
   pivot_wider(names_from = sc, values_from = win)
 
 print(out.sim2)
+
+tdf <- df2018 %>% 
+       filter(party=="CUMHURİYET HALK PARTİSİ" |
+       party=="HALKLARIN DEMOKRATİK PARTİSİ" | 
+       party=="İYİ PARTİ") %>%
+       group_by(party) %>% 
+       summarise(custom.votes = sum(custom.votes)) %>% 
+       mutate(custom.votes.sum = sum(custom.votes))
+
+CHP.value <-  (252-240)/600332*100000 
+HDP.value <-  (241-240)/600332*100000  
+IYIP.value <- (248-240)/600332*100000 
+
+      
+
